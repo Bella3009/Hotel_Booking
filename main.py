@@ -6,6 +6,7 @@ df = pd.read_csv("hotels.csv", dtype={"id":str})
 class Hotel:
     def __init__(self, id):
         self.id = id
+        self.name = df.loc[df["id"] == self.id, "name"].squeeze()
 
     def book(self):
         """Book a hotel by changing its availability to no"""
@@ -22,10 +23,18 @@ class Hotel:
 
 class Reservation:
     def __init__(self, client_name, hotel_obj):
-        pass
+        self.client_name = client_name
+        self.hotel = hotel_obj
 
     def generate(self):
-        pass
+        content = f"""
+        Thank you for your reservation!
+        Here are your booking data:
+        Name: {self.client_name}
+        Hotel name: {self.hotel.name}        
+        """
+
+        return content
 
 
 print(df)
