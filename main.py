@@ -2,6 +2,7 @@ import pandas as pd
 
 df = pd.read_csv("hotels.csv", dtype={"id": str})
 df_card = pd.read_csv("cards.csv", dtype=str).to_dict(orient="records")
+df_security = pd.read_csv("card_security.csv", dtype=str)
 
 
 class Hotel:
@@ -52,17 +53,30 @@ class CreditCard:
             return False
 
 
+class SecureCard(CreditCard):
+    def authenticate(self, given_password):
+        password = df_security.loc[df_security["number"] == self.number, "password"].squeeze()
+        if password == given_password:
+            return True
+        else:
+            return False
+
+
 print(df)
 hotel_id = input("Enter the id of the hotel: ")
 hotel = Hotel(hotel_id)
 
 if hotel.available():
-    credit_card = CreditCard("1234")
+    credit_card = SecureCard("1234")
+    name = input("Enter your name: ")
+    passwrd = input("Enter Card Password: ")
     if credit_card.validate(expiration="12/26", holder="John Smith", cvc="123"):
-        hotel.book()
-        name = input("Enter your name: ")
-        reserve = Reservation(name, hotel)
-        print(reserve.generate())
+        if credit_card.authenticate(given_password=passwrd):
+            hotel.book()
+            reserve = Reservation(name, hotel)
+            print(reserve.generate())
+        else:
+            print("Credit Card authentication failed")
     else:
         print("There was a problem with your payment")
 else:
