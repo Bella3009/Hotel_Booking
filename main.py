@@ -60,6 +60,15 @@ class SecureCard(CreditCard):
         return False
 
 
+class SecureCard(CreditCard):
+    def authenticate(self, given_password):
+        password = df_security.loc[df_security["number"] == self.number, "password"].squeeze()
+        if password == given_password:
+            return True
+        else:
+            return False
+
+
 print(df)
 hotel_id = input("Enter the id of the hotel: ")
 hotel = Hotel(hotel_id)
