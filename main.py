@@ -48,7 +48,14 @@ class CreditCard:
                      "holder": holder, "cvc": cvc}
         if card_data in df_card:
             return True
+        return False
 
+
+class SecureCard(CreditCard):
+    def authenticate(self, given_password):
+        password = df_security.loc[df_security["number"] == self.number, "password"].squeeze()
+        if password == given_password:
+            return True
         return False
 
 
